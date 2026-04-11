@@ -27,8 +27,11 @@ import java.util.List;
 import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
 
+import org.springframework.security.test.context.support.WithMockUser;
+
 @IntegrationTest
 @AutoConfigureMockMvc
+@WithMockUser
 class APICustomLogicIntTest {
 
     @Autowired
