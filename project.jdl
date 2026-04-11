@@ -1,0 +1,15 @@
+application {
+  config {
+    baseName eRequest,
+    applicationType monolith,
+    packageName com.mycompany.erequest,
+    authenticationType jwt,
+    prodDatabaseType mysql,
+    devDatabaseType mysql,
+    clientFramework angular,
+    buildTool maven,
+    nativeLanguage vi,
+    languages [en, vi],
+    testFrameworks [cypress]
+  }
+}

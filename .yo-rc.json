@@ -1,0 +1,19 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "eRequest",
+    "buildTool": "maven",
+    "clientFramework": "angular",
+    "devDatabaseType": "mysql",
+    "devServerPort": 4200,
+    "entities": [],
+    "jhipsterVersion": "8.7.3",
+    "jwtSecretKey": "YWYyNTA1YWMxZjc4ZTk2ZDRlM2Q1YmZjMjNjMzIzYmUxYWE0OTYyNjkxMTQwMjBmNjZjYmVlYzYwNmIxM2MxNWU0NzllNWZmMDM5YTJmMmE3M2NmMmRkODMwZmFlOTcwMDNiY2JiZThmYWNlYjQ5OTA5YTgzYzliMjA4YmFhYTU=",
+    "languages": ["vi", "en"],
+    "nativeLanguage": "vi",
+    "packageName": "com.mycompany.erequest",
+    "prodDatabaseType": "mysql",
+    "testFrameworks": ["cypress"]
+  }
+}
