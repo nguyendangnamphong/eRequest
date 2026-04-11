@@ -32,6 +32,9 @@ jobs:
         echo "Checking docker-compose mysql exposed port (3362)"
         grep "3362:3306" src/main/docker/mysql.yml || (echo "Docker MySQL Port 3362 not found!" && exit 1)
 
+    - name: Make mvnw executable
+      run: chmod +x mvnw
+
     - name: Build Project
       run: ./mvnw clean compile -DskipTests
 
