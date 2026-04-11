@@ -1,0 +1,26 @@
+{
+  "eRequestApp": {
+    "ticketAttachment": {
+      "home": {
+        "title": "Ticket Attachments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket Attachment",
+        "createOrEditLabel": "Create or edit a Ticket Attachment",
+        "notFound": "No Ticket Attachments found"
+      },
+      "created": "A new Ticket Attachment is created with identifier {{ param }}",
+      "updated": "A Ticket Attachment is updated with identifier {{ param }}",
+      "deleted": "A Ticket Attachment is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket Attachment {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket Attachment"
+      },
+      "id": "ID",
+      "fileId": "File Id",
+      "fileName": "File Name",
+      "ticket": "Ticket"
+    }
+  }
+}

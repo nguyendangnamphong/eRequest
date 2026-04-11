@@ -1,0 +1,27 @@
+{
+  "eRequestApp": {
+    "ticketComment": {
+      "home": {
+        "title": "Ticket Comments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket Comment",
+        "createOrEditLabel": "Create or edit a Ticket Comment",
+        "notFound": "No Ticket Comments found"
+      },
+      "created": "A new Ticket Comment is created with identifier {{ param }}",
+      "updated": "A Ticket Comment is updated with identifier {{ param }}",
+      "deleted": "A Ticket Comment is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket Comment {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket Comment"
+      },
+      "id": "ID",
+      "authorEmail": "Author Email",
+      "content": "Content",
+      "createdAt": "Created At",
+      "ticket": "Ticket"
+    }
+  }
+}

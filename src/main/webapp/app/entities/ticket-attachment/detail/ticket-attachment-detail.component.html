@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (ticketAttachment(); as ticketAttachmentRef) {
+      <div>
+        <h2 data-cy="ticketAttachmentDetailsHeading">
+          <span jhiTranslate="eRequestApp.ticketAttachment.detail.title">Ticket Attachment</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ ticketAttachmentRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketAttachment.fileId">File Id</span></dt>
+          <dd>
+            <span>{{ ticketAttachmentRef.fileId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketAttachment.fileName">File Name</span></dt>
+          <dd>
+            <span>{{ ticketAttachmentRef.fileName }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketAttachment.ticket">Ticket</span></dt>
+          <dd>
+            @if (ticketAttachment()!.ticket) {
+              <div>
+                <a [routerLink]="['/ticket', ticketAttachment()!.ticket?.id, 'view']">{{ ticketAttachmentRef.ticket?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/ticket-attachment', ticketAttachmentRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

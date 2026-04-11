@@ -1,0 +1,263 @@
+﻿1. Database
+
+
+Database của eRequest được thiết kế để quản lý vòng đời của giao dịch (Ticket) và trạng thái thực thi của từng bước xử lý (Ticket Step). Hệ thống không lưu cấu trúc luồng nghiệp vụ và không lưu nội dung form chi tiết, vì các phần này đã được quản lý bởi eFlow và eForm. eRequest chỉ lưu phần điều phối, tiến độ xử lý, liên kết dữ liệu và thông tin theo dõi.
+1. Mục tiêu dữ liệu
+Database cần hỗ trợ các chức năng sau:
+* Tạo và theo dõi một giao dịch từ lúc khởi tạo đến khi hoàn tất.
+* Lưu lịch sử các bước xử lý của giao dịch.
+* Liên kết mỗi bước/node với dữ liệu form tương ứng bên eForm.
+* Quản lý quan hệ giữa các giao dịch nếu có đính kèm hoặc liên quan.
+* Theo dõi SLA, deadline và thời điểm nhắc việc.
+* Hỗ trợ xử lý đồng thời bằng optimistic locking.
+2. Thực thể chính
+2.1. Ticket
+Đại diện cho một giao dịch hoặc một hồ sơ đang được xử lý trong hệ thống.
+Ý nghĩa:
+* Là thực thể gốc của toàn bộ quy trình.
+* Mỗi ticket tương ứng với một yêu cầu nghiệp vụ cụ thể, ví dụ: đề nghị thanh toán, đề nghị nghỉ phép, đề xuất mua hàng.
+* Ticket chỉ lưu trạng thái và thông tin điều phối, không lưu logic luồng.
+Thuộc tính chính:
+* ticket_id: khóa chính, định danh duy nhất của ticket.
+* flow_id: ID của luồng nghiệp vụ lấy từ eFlow.
+* ticket_name: tên giao dịch do người dùng nhập.
+* creator_email: email người tạo ticket.
+* current_step_id: ID của bước hiện tại đang xử lý.
+* status: trạng thái của ticket, ví dụ: nháp, đang thực hiện, hoàn thành, hủy, từ chối.
+* priority: mức độ ưu tiên.
+* created_at: thời điểm tạo.
+* updated_at: thời điểm cập nhật gần nhất.
+* completed_at: thời điểm hoàn tất.
+* version: số phiên bản dùng cho optimistic locking.
+________________
+
+
+2.2. Ticket Step
+Đại diện cho một instance thực tế của một node trong luồng.
+Ý nghĩa:
+* Mỗi khi ticket đi qua một node, hệ thống sinh một record trong bảng này.
+* Nếu một node được đi qua nhiều lần thì sẽ có nhiều ticket step khác nhau.
+* Bảng này là lịch sử thực thi chi tiết của ticket.
+Thuộc tính chính:
+* step_id: khóa chính.
+* ticket_id: khóa ngoại trỏ về ticket.
+* node_id: ID của node trong eFlow.
+* performer_email: email của người thực hiện bước này.
+* status: trạng thái bước, ví dụ: chờ xử lý, đã hoàn thành, bị từ chối.
+* started_at: thời điểm bắt đầu xử lý.
+* finished_at: thời điểm kết thúc xử lý.
+* note: ghi chú hoặc ý kiến xử lý.
+________________
+
+
+2.3. Ticket Data Link
+Là bảng liên kết dữ liệu giữa ticket, node và dữ liệu form ở eForm.
+Ý nghĩa:
+* Dùng để biết trong ticket này, node nào đang gắn với bản ghi form nào.
+* Cho phép truy vết dữ liệu nguồn nếu có kế thừa hoặc sinh ra từ một form khác.
+* Đây là bảng liên kết quan trọng để eRequest tra cứu dữ liệu thật từ eForm khi cần tính toán điều kiện rẽ nhánh.
+Thuộc tính chính:
+* link_id: khóa chính.
+* ticket_id: khóa ngoại trỏ về ticket.
+* node_id: node phát sinh dữ liệu.
+* form_data_id: ID bản ghi dữ liệu tại eForm.
+* parent_form_data_id: ID bản ghi nguồn ban đầu, nếu có quan hệ kế thừa.
+________________
+
+
+2.4. Ticket Relation
+Quản lý các giao dịch có liên quan hoặc được đính kèm với nhau.
+Ý nghĩa:
+* Dùng khi một ticket cần tham chiếu sang một ticket khác.
+* Hỗ trợ quan hệ “giao dịch cha - giao dịch con”, “giao dịch liên quan”, hoặc “đính kèm xử lý”.
+Thuộc tính chính:
+* id: khóa chính.
+* ticket_id: ticket gốc.
+* related_file_id: ticket về các file được lưu trong S3 liên quan đến id này
+________________
+
+
+
+
+2.5. Ticket SLA
+Theo dõi thời hạn xử lý của ticket hoặc từng bước.
+Ý nghĩa:
+* Phục vụ hiển thị cảnh báo trễ hạn.
+* Hỗ trợ tính toán thời điểm nhắc việc và deadline xử lý.
+Thuộc tính chính:
+* id: khóa chính.
+* ticket_id: khóa ngoại trỏ về ticket.
+* step_id: khóa ngoại trỏ về step nếu SLA áp dụng theo bước.
+* deadline: hạn xử lý.
+* remind_at: thời điểm bắt đầu nhắc việc.
+________________
+
+
+3. Quan hệ giữa các bảng
+* Một ticket có thể có nhiều ticket_step.
+* Một ticket có thể có nhiều bản ghi trong ticket_data_link.
+* Một ticket có thể có nhiều quan hệ trong ticket_relation.
+* Một ticket có thể có nhiều bản ghi SLA trong ticket_sla.
+* ticket_step thuộc về đúng một ticket.
+* ticket_data_link gắn ticket với node và dữ liệu form bên ngoài.
+* ticket_sla có thể gắn trực tiếp với ticket hoặc cụ thể theo từng step.
+________________
+
+
+4. Quy ước trạng thái
+Có thể mô tả trạng thái theo kiểu số nguyên để dễ lưu trữ:
+Ticket status
+* 0: Nháp
+* 1: Đang thực hiện
+* 2: Hoàn thành
+* 3: Hủy
+* 4: Từ chối
+
+
+Ticket Step status
+* 0: Chờ xử lý
+* 1: Đã hoàn thành
+* 2: Bị từ chối
+________________
+
+
+5. Nguyên tắc xử lý dữ liệu
+* eRequest không lưu toàn bộ cấu trúc workflow.
+* eRequest chỉ lưu flow_id, node_id, ticket_id và các trạng thái thực thi.
+* Khi cần hiển thị logic luồng, hệ thống lấy cấu trúc từ eFlow.
+* Khi cần dữ liệu form, hệ thống tra ticket_data_link để lấy form_data_id, sau đó gọi eForm để lấy dữ liệu thật.
+* Khi nhiều người cùng thao tác, hệ thống dùng version ở bảng ticket để tránh race condition.
+________________
+
+
+6. Mô tả ngắn gọn theo kiểu AI-friendly
+Nếu cần một mô tả ngắn gọn để AI dễ hiểu, có thể dùng như sau:
+eRequest database stores workflow execution state, not workflow definition.
+ The core entity is ticket, which represents one business transaction. Each ticket can have many ticket_step records, each representing one execution instance of a workflow node. ticket_data_link maps a ticket and node to a corresponding form_data_id in eForm, allowing eRequest to retrieve actual form data when evaluating branching logic. ticket_relation stores links between related tickets. ticket_sla stores deadlines and reminder timestamps for ticket or step-level SLA tracking. The schema uses bigint IDs, datetime timestamps, and a version field on ticket for optimistic locking.
+2. API
+1. Nhóm API Khởi tạo và Danh mục 
+Nhóm này phục vụ việc hiển thị các quy trình người dùng được phép thực hiện và tạo mới hồ sơ.
+* GET /api/request/workflows: Lấy danh sách các quy trình (workflows) từ eFlow mà người dùng hiện tại có quyền truy cập để hiển thị tại trang Home.
+* POST /api/request/ticket/init: Khởi tạo bản ghi hồ sơ mới trong bảng ticket. API này sẽ gọi sang eFlow để lấy node "Start" và thông tin biểu mẫu (eForm) đầu tiên.
+* GET /api/request/ticket/related-options: Tìm kiếm các giao dịch cũ để người dùng chọn đính kèm vào trường related_ticket_id khi tạo mới.
+
+
+2. Nhóm API Quản lý Danh sách Giao dịch 
+Phục vụ việc hiển thị hồ sơ tại các màn hình "Giao dịch của tôi" và "Giao dịch cần xử lý".
+* GET /api/request/tickets/my-requests: Lấy danh sách hồ sơ do chính người dùng tạo, hỗ trợ phân trang và lọc theo trạng thái (Đang thực hiện, Hoàn thành, Hủy, Từ chối).
+* GET /api/request/tickets/pending-tasks: Lấy danh sách hồ sơ đang chờ người dùng xử lý. Cần trả về kèm thông tin SLA để hiển thị icon cảnh báo trễ hạn.
+* POST /api/request/ticket/export: Xuất dữ liệu danh sách giao dịch ra file Excel/PDF.
+3. Nhóm API Xử lý Nghiệp vụ & Điều phối 
+Đây là nhóm API quan trọng nhất, thực hiện vai trò "điều phối" thực tế của eRequest.
+* GET /api/request/ticket/{ticketId}/detail: Lấy thông tin chi tiết hồ sơ, bao gồm tiến độ hiện tại để vẽ lại sơ đồ luồng (nhuộm màu các node đã đi qua) và dữ liệu biểu mẫu đã nhập.
+* GET /api/request/ticket/{ticketId}/step-config: eRequest gọi sang eFlow để lấy cấu trúc node hiện tại (ai ký, form nào, công thức rẽ nhánh là gì).
+* POST /api/request/ticket/{ticketId}/submit:
+   * Tác dụng: Lưu dữ liệu người dùng vừa nhập vào eForm, sau đó thực hiện lệnh "Chuyển bước".
+   * Logic: eRequest lấy "công thức" (relate_demand) từ eFlow, lấy dữ liệu thực tế từ eForm để tính toán hướng đi tiếp theo (đối chiếu chuỗi logic), sau đó cập nhật bảng ticket_step và ticket_data_link 
+* POST /api/request/ticket/{ticketId}/action: Thực hiện các hành động như "Hủy giao dịch", "Nhân bản giao dịch", hoặc "Từ chối duyệt".
+4. Nhóm API Tra cứu và Giám sát
+Phục vụ các Tab thông tin trong trang chi tiết hồ sơ.
+* GET /api/request/ticket/{ticketId}/history: Lấy lịch sử phê duyệt của hồ sơ (Ai đã làm gì, lúc nào).
+* GET /api/request/ticket/{ticketId}/sla: Lấy thông tin thời gian thực hiện thực tế so với dự kiến để hiển thị tại tab SLA.
+* GET /api/request/ticket/{ticketId}/related: Lấy danh sách thông tin các hồ sơ được liên kết qua bảng ticket_relation.
+* POST /api/request/ticket/{ticketId}/comment: Gửi và lấy danh sách bình luận, thảo luận trong hồ sơ.
+5. Nhóm API Tích hợp & AI Agent 
+Dành cho việc mở rộng hệ thống với AI agent trong tương lai.
+* POST /api/request/ai/create-from-pdf: Nhận dữ liệu JSON đã trích xuất từ AI (sau khi người dùng gửi PDF lên S3) để tạo Ticket tự động mà không cần nhập thủ công.
+* GET /api/request/ai/verify-data: Trả về dữ liệu AI đã điền để người dùng kiểm tra lại trên giao diện trước khi chính thức bấm "Gửi giao dịch".
+
+
+6. Mock API
+1. GET /api/account/profile.
+* Nguồn: eAccount
+* Input header: Authorization: Bearer <TOKEN>.
+* Response: 
+{
+  "email": "user@vnu.uet",
+  "firstName": "Nguyễn Văn A",
+  "phone": "0912345678",
+  "dob": "1995-10-15T00:00:00Z",
+  "gender": "MALE",
+  "position": "Nhân viên",
+  "job": "Kế toán",
+  "department": "Phòng BI",
+  "avatar": "https://s3.cloud/eaccount/avatars/user_a.png",
+  "roles": [-1, 2, 3] 
+}
+2. POST /api/internal/permissions/check-access
+* Nguồn: eAccount
+* Input body: 
+{
+  "email": "user@vnu.uet",
+  "requiredRole": 2
+}
+* Response: { "hasAccess": true }
+3. GET /api/owner/form
+* Nguồn: eForm
+* Input Param: formId (Ví dụ: 000071VoIeLGyFwMGweR23umq1o)
+* Output: 
+{
+  "formId": "000071VoIeLGyFwMGweR23umq1o",
+  "formName": "Đơn xin nghỉ phép",
+  "jsonForm": "[{\"id\": \"row-1\", \"type\": \"input\", \"label\": \"Lý do nghỉ\"}]",
+  "variableArr": [
+    {"code": "reason_01", "variableName": "Lý do", "variableType": "text"}
+  ],
+  "statusForm": 2
+}
+4. POST /api/owner/find-form
+* Nguồn: eForm
+* Input Body:
+{
+  "statusForm": ["2"],
+  "formName": "PTSC"
+             }
+* Output: 
+{
+  "total": 1,
+  "content": [
+    {
+      "formId": "000071VoIeLGyFwMGweR23umq1o",
+      "formName": "PTSC_Biên bản nghiệm thu",
+      "statusForm": "2",
+      "createdDate": "2026-01-07 11:16:29"
+    }
+  ]
+}
+5. GET /api/workflow/node/{nodeId}/config
+* Nguồn: eFlow
+* Input Param: nodeId
+* Output: 
+{
+  "nodeId": 105,
+  "nodeType": "user_task",
+  "flowId": 5001,
+  "performer": {
+    "userId": 159822,
+    "orderExecution": 1
+  },
+  "mapForm": {
+    "targetFormId": "F_001",
+    "sourceFormId": "F_002"
+  },
+  "relateDemand": "vondieule > 100000000"
+}
+
+
+
+
+
+
+### BỔ SUNG QUY TẮC NGHIỆP VỤ & LOGIC CẬP NHẬT (Hệ thống mới)
+* Tuần tự hóa thực thi (Sequence Mapping): Trong API /api/request/ticket/{ticketId}/submit, logic xử lý phải tuân thủ thứ tự:
+   1. Gọi eForm lưu dữ liệu người dùng.
+   2. Sau khi eForm trả về thành công, eRequest mới lấy dữ liệu đó để đối chiếu với relate_demand từ eFlow.
+   3. Quyết định node tiếp theo và cập nhật bảng ticket_step.
+* Xác thực trạng thái người thực hiện: Trước khi chuyển giao một bước cho người dùng (Ticket Step), eRequest phải gọi API nội bộ của eAccount để xác nhận tài khoản đó vẫn đang isActive = true. Nếu tài khoản bị chặn, hệ thống phải chuyển hồ sơ cho người quản lý luồng (superviser_name) xử lý thay thế.
+* Xử lý Race Condition: Sử dụng triệt để trường version trong bảng ticket. Mọi yêu cầu cập nhật bước (submit hoặc action) sẽ bị từ chối nếu số version gửi lên từ Frontend thấp hơn version hiện tại trong Database.
+* Quản lý liên kết (Related Tickets): Trường related_file_id trong bảng ticket_relation được dùng để lưu trữ các ID tài liệu liên quan từ S3, đảm bảo hồ sơ có đầy đủ căn cứ khi chuyển bước.
+### CHUẨN HÓA XUNG ĐỘT API & DATA STRUCTURE
+* Xung đột trường liên kết: Trong bảng ticket_relation, đổi tên trường related_file_id thành related_ticket_id để khớp với logic "liên kết giao dịch cũ" và API tìm kiếm lựa chọn đính kèm.
+* Chuẩn hóa Body Submit: API POST /submit phải nhận vào một Object gồm: { "ticketId": Long, "formData": { "field_code": "value" }, "version": Int }. Việc này đảm bảo eRequest có đủ dữ liệu để vừa gọi eForm lưu trữ, vừa tự thực hiện logic rẽ nhánh.
+* Xung đột Response danh sách: API lấy danh sách "Giao dịch của tôi" phải trả về kèm trường flow_name và current_node_name. Hiện tại Database eRequest chỉ lưu ID, nếu không bổ sung trường này trong Response (bằng cách Join với eFlow), Frontend sẽ phải gọi hàng trăm API lẻ để lấy tên quy trình, gây lag hệ thống.
+* Format Ngày tháng: Thống nhất toàn bộ định dạng ngày tháng trả về là ISO 8601 (yyyy-MM-dd'T'HH:mm:ssZ) để khớp với eAccount, thay vì dùng định dạng seconds/nanos như một số API cũ của eForm

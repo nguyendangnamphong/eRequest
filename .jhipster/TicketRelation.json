@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "changelogDate": "20260411065008"
+  },
+  "applications": ["eRequest"],
+  "fields": [
+    {
+      "fieldName": "relatedTicketId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "TicketRelation",
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "ticket",
+      "otherEntityRelationshipName": "relations",
+      "relationshipName": "ticket",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

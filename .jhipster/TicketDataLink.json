@@ -1,0 +1,35 @@
+{
+  "annotations": {
+    "changelogDate": "20260411065007"
+  },
+  "applications": ["eRequest"],
+  "fields": [
+    {
+      "fieldName": "nodeId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "formDataId",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "parentFormDataId",
+      "fieldType": "String"
+    }
+  ],
+  "name": "TicketDataLink",
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "ticket",
+      "otherEntityRelationshipName": "dataLinks",
+      "relationshipName": "ticket",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

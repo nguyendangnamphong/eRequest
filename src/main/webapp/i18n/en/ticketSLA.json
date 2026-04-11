@@ -1,0 +1,27 @@
+{
+  "eRequestApp": {
+    "ticketSLA": {
+      "home": {
+        "title": "Ticket SLAS",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket SLA",
+        "createOrEditLabel": "Create or edit a Ticket SLA",
+        "notFound": "No Ticket SLAS found"
+      },
+      "created": "A new Ticket SLA is created with identifier {{ param }}",
+      "updated": "A Ticket SLA is updated with identifier {{ param }}",
+      "deleted": "A Ticket SLA is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket SLA {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket SLA"
+      },
+      "id": "ID",
+      "deadline": "Deadline",
+      "remindAt": "Remind At",
+      "step": "Step",
+      "ticket": "Ticket"
+    }
+  }
+}

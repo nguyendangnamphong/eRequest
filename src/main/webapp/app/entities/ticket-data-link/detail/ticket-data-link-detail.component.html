@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (ticketDataLink(); as ticketDataLinkRef) {
+      <div>
+        <h2 data-cy="ticketDataLinkDetailsHeading"><span jhiTranslate="eRequestApp.ticketDataLink.detail.title">Ticket Data Link</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ ticketDataLinkRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketDataLink.nodeId">Node Id</span></dt>
+          <dd>
+            <span>{{ ticketDataLinkRef.nodeId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketDataLink.formDataId">Form Data Id</span></dt>
+          <dd>
+            <span>{{ ticketDataLinkRef.formDataId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketDataLink.parentFormDataId">Parent Form Data Id</span></dt>
+          <dd>
+            <span>{{ ticketDataLinkRef.parentFormDataId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketDataLink.ticket">Ticket</span></dt>
+          <dd>
+            @if (ticketDataLink()!.ticket) {
+              <div>
+                <a [routerLink]="['/ticket', ticketDataLink()!.ticket?.id, 'view']">{{ ticketDataLinkRef.ticket?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/ticket-data-link', ticketDataLinkRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

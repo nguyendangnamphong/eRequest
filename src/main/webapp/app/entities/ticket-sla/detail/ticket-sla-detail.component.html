@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (ticketSLA(); as ticketSLARef) {
+      <div>
+        <h2 data-cy="ticketSLADetailsHeading"><span jhiTranslate="eRequestApp.ticketSLA.detail.title">Ticket SLA</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ ticketSLARef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketSLA.deadline">Deadline</span></dt>
+          <dd>
+            <span>{{ ticketSLARef.deadline | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketSLA.remindAt">Remind At</span></dt>
+          <dd>
+            <span>{{ ticketSLARef.remindAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketSLA.ticket">Ticket</span></dt>
+          <dd>
+            @if (ticketSLA()!.ticket) {
+              <div>
+                <a [routerLink]="['/ticket', ticketSLA()!.ticket?.id, 'view']">{{ ticketSLARef.ticket?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/ticket-sla', ticketSLARef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

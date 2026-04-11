@@ -1,0 +1,39 @@
+{
+  "eRequestApp": {
+    "ticket": {
+      "home": {
+        "title": "Tickets",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket",
+        "createOrEditLabel": "Create or edit a Ticket",
+        "notFound": "No Tickets found"
+      },
+      "created": "A new Ticket is created with identifier {{ param }}",
+      "updated": "A Ticket is updated with identifier {{ param }}",
+      "deleted": "A Ticket is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket"
+      },
+      "id": "ID",
+      "flowId": "Flow Id",
+      "ticketName": "Ticket Name",
+      "creatorEmail": "Creator Email",
+      "currentStepId": "Current Step Id",
+      "status": "Status",
+      "priority": "Priority",
+      "version": "Version",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "completedAt": "Completed At",
+      "steps": "Steps",
+      "dataLinks": "Data Links",
+      "relations": "Relations",
+      "attachments": "Attachments",
+      "slas": "Slas",
+      "comments": "Comments"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "annotations": {
+    "changelogDate": "20260411065010"
+  },
+  "applications": ["eRequest"],
+  "entityTableName": "ticket_sla",
+  "fields": [
+    {
+      "fieldName": "deadline",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "remindAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "TicketSLA",
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "ticketStep",
+      "otherEntityRelationshipName": "sla",
+      "relationshipName": "step",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "ticket",
+      "otherEntityRelationshipName": "slas",
+      "relationshipName": "ticket",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

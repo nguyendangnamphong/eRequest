@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (ticketStep(); as ticketStepRef) {
+      <div>
+        <h2 data-cy="ticketStepDetailsHeading"><span jhiTranslate="eRequestApp.ticketStep.detail.title">Ticket Step</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ ticketStepRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.nodeId">Node Id</span></dt>
+          <dd>
+            <span>{{ ticketStepRef.nodeId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.performerEmail">Performer Email</span></dt>
+          <dd>
+            <span>{{ ticketStepRef.performerEmail }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.status">Status</span></dt>
+          <dd>
+            <span>{{ ticketStepRef.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.startedAt">Started At</span></dt>
+          <dd>
+            <span>{{ ticketStepRef.startedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.finishedAt">Finished At</span></dt>
+          <dd>
+            <span>{{ ticketStepRef.finishedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.sla">Sla</span></dt>
+          <dd>
+            @if (ticketStep()!.sla) {
+              <div>
+                <a [routerLink]="['/ticket-sla', ticketStep()!.sla?.id, 'view']">{{ ticketStepRef.sla?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticketStep.ticket">Ticket</span></dt>
+          <dd>
+            @if (ticketStep()!.ticket) {
+              <div>
+                <a [routerLink]="['/ticket', ticketStep()!.ticket?.id, 'view']">{{ ticketStepRef.ticket?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/ticket-step', ticketStepRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

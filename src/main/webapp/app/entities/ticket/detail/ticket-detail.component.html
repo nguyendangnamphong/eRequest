@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (ticket(); as ticketRef) {
+      <div>
+        <h2 data-cy="ticketDetailsHeading"><span jhiTranslate="eRequestApp.ticket.detail.title">Ticket</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ ticketRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.flowId">Flow Id</span></dt>
+          <dd>
+            <span>{{ ticketRef.flowId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.ticketName">Ticket Name</span></dt>
+          <dd>
+            <span>{{ ticketRef.ticketName }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.creatorEmail">Creator Email</span></dt>
+          <dd>
+            <span>{{ ticketRef.creatorEmail }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.currentStepId">Current Step Id</span></dt>
+          <dd>
+            <span>{{ ticketRef.currentStepId }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.status">Status</span></dt>
+          <dd>
+            <span>{{ ticketRef.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.priority">Priority</span></dt>
+          <dd>
+            <span>{{ ticketRef.priority }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.version">Version</span></dt>
+          <dd>
+            <span>{{ ticketRef.version }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ ticketRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ ticketRef.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="eRequestApp.ticket.completedAt">Completed At</span></dt>
+          <dd>
+            <span>{{ ticketRef.completedAt | formatMediumDatetime }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/ticket', ticketRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

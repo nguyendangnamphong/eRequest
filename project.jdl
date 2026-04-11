@@ -12,4 +12,69 @@ application {
     languages [en, vi],
     testFrameworks [cypress]
   }
+  entities Ticket, TicketStep, TicketDataLink, TicketRelation, TicketAttachment, TicketSLA, TicketComment
 }
+
+entity Ticket {
+  flowId Long required,
+  ticketName String required,
+  creatorEmail String required,
+  currentStepId Long,
+  status Integer required,
+  priority Integer,
+  version Integer required,
+  createdAt Instant,
+  updatedAt Instant,
+  completedAt Instant
+}
+
+entity TicketStep {
+  nodeId Long required,
+  performerEmail String required,
+  status Integer required,
+  startedAt Instant,
+  finishedAt Instant
+}
+
+entity TicketDataLink {
+  nodeId Long required,
+  formDataId String required,
+  parentFormDataId String
+}
+
+entity TicketRelation {
+  relatedTicketId Long required
+}
+
+entity TicketAttachment {
+  fileId String required,
+  fileName String
+}
+
+entity TicketSLA {
+  deadline Instant required,
+  remindAt Instant
+}
+
+entity TicketComment {
+  authorEmail String required,
+  content TextBlob required,
+  createdAt Instant
+}
+
+relationship OneToMany {
+  Ticket{steps} to TicketStep{ticket(id)},
+  Ticket{dataLinks} to TicketDataLink{ticket(id)},
+  Ticket{relations} to TicketRelation{ticket(id)},
+  Ticket{attachments} to TicketAttachment{ticket(id)},
+  Ticket{slas} to TicketSLA{ticket(id)},
+  Ticket{comments} to TicketComment{ticket(id)}
+}
+
+relationship OneToOne {
+  TicketStep{sla} to TicketSLA{step(id)}
+}
+
+// We don't set Pagination yet unless needed. Let's add simple pagination for Ticket
+paginate Ticket with pagination
+service all with serviceClass

@@ -1,0 +1,42 @@
+BÁO CÁO NHỮNG THAY ĐỔI & BỔ SUNG TRONG THIẾT KẾ CÁC MOCK API & DATABASE
+
+Nhằm đảm bảo luồng eRequest có thể hoạt động trơn tru với eForm, eFlow và eAccount, hệ thống đã thực hiện các điều chỉnh và bổ sung sau:
+
+1. BỔ SUNG MOCK API LƯU DỮ LIỆU VÀO EFORM
+- Tên API: POST /api/owner/form-data
+- Nguồn: eForm
+- Input Body:
+  {
+      "formId": "000071VoIeLGyFwMGweR23umq1o",
+      "formData": {
+          "reason_01": "Nghỉ việc cá nhân",
+          "days": 2
+      }
+  }
+- Output:
+  {
+      "dataId": "RECORD_001_AXYZ",
+      "status": "SUCCESS"
+  }
+Ý nghĩa: API này dùng để eRequest đẩy dữ liệu biểu mẫu sang eForm lưu lại ngay khi nhận được Submit từ người dùng, trước khi xét duyệt bước tiếp theo.
+
+2. CẬP NHẬT MOCK API LẤY CẤU HÌNH NODE (EFLOW)
+- Tên API: GET /api/workflow/node/{nodeId}/config
+- Bổ sung trường: 
+  - Thêm trường `superviserName` (String) vào kết quả trả về của Node. Trường này dùng để làm người nhận thay thế (Fallback Supervisor) khi Performer chính bị Block ở eAccount.
+  - Bổ sung trường `email` vào cụm `performer` nhằm đồng nhất việc tìm kiếm, phân công công việc thông qua email người dùng thay cho userId (tránh query thừa).
+- Output mới:
+  {
+      "nodeId": 105,
+      "superviserName": "manager@vnu.uet",
+      "performer": {
+          "userId": 159822,
+          "email": "user@vnu.uet",
+          "orderExecution": 1
+      },
+      "relateDemand": "vondieule > 100000000"
+  }
+
+3. QUY TRÌNH & THIẾT KẾ LIÊN KẾT GIAO DỊCH (TicketRelation vs S3)
+- Bảng TicketRelation: Sử dụng chuẩn theo field là `relatedTicketId` để móc nối các giao dịch cha - con, liên quan (Related Tickets).
+- Bổ sung bảng TicketAttachment: Đây là bảng mới được sinh ra với 2 trường `fileId` (mã trên S3) và `fileName`, giải quyết riêng biệt bài toán đính kèm file thay vì ghép nối có thể gây xung đột luồng xử lý với các Ticket cũ.

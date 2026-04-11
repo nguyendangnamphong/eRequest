@@ -1,0 +1,27 @@
+{
+  "eRequestApp": {
+    "ticketDataLink": {
+      "home": {
+        "title": "Ticket Data Links",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket Data Link",
+        "createOrEditLabel": "Create or edit a Ticket Data Link",
+        "notFound": "No Ticket Data Links found"
+      },
+      "created": "A new Ticket Data Link is created with identifier {{ param }}",
+      "updated": "A Ticket Data Link is updated with identifier {{ param }}",
+      "deleted": "A Ticket Data Link is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket Data Link {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket Data Link"
+      },
+      "id": "ID",
+      "nodeId": "Node Id",
+      "formDataId": "Form Data Id",
+      "parentFormDataId": "Parent Form Data Id",
+      "ticket": "Ticket"
+    }
+  }
+}

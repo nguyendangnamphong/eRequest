@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20260411065006"
+  },
+  "applications": ["eRequest"],
+  "fields": [
+    {
+      "fieldName": "nodeId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "performerEmail",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "startedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "finishedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "TicketStep",
+  "relationships": [
+    {
+      "otherEntityName": "ticketSLA",
+      "otherEntityRelationshipName": "step",
+      "relationshipName": "sla",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "ticket",
+      "otherEntityRelationshipName": "steps",
+      "relationshipName": "ticket",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

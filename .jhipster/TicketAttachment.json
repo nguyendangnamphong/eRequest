@@ -1,0 +1,30 @@
+{
+  "annotations": {
+    "changelogDate": "20260411065009"
+  },
+  "applications": ["eRequest"],
+  "fields": [
+    {
+      "fieldName": "fileId",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fileName",
+      "fieldType": "String"
+    }
+  ],
+  "name": "TicketAttachment",
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "ticket",
+      "otherEntityRelationshipName": "attachments",
+      "relationshipName": "ticket",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

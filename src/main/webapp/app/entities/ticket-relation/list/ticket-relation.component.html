@@ -1,0 +1,107 @@
+<div>
+  <h2 id="page-heading" data-cy="TicketRelationHeading">
+    <span jhiTranslate="eRequestApp.ticketRelation.home.title">Ticket Relations</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="eRequestApp.ticketRelation.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-ticket-relation"
+        [routerLink]="['/ticket-relation/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="eRequestApp.ticketRelation.home.createLabel">Thêm mới một Ticket Relation</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (ticketRelations?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="eRequestApp.ticketRelation.home.notFound">No Ticket Relations found</span>
+    </div>
+  }
+
+  @if (ticketRelations && ticketRelations.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="relatedTicketId">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketRelation.relatedTicketId">Related Ticket Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ticket.id">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketRelation.ticket">Ticket</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticketRelation of ticketRelations; track trackId(ticketRelation)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/ticket-relation', ticketRelation.id, 'view']">{{ ticketRelation.id }}</a>
+              </td>
+              <td>{{ ticketRelation.relatedTicketId }}</td>
+              <td>
+                @if (ticketRelation.ticket) {
+                  <div>
+                    <a [routerLink]="['/ticket', ticketRelation.ticket.id, 'view']">{{ ticketRelation.ticket.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/ticket-relation', ticketRelation.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/ticket-relation', ticketRelation.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(ticketRelation)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

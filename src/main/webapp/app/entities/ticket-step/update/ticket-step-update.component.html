@@ -1,0 +1,151 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-ticket-step-heading" data-cy="TicketStepCreateUpdateHeading" jhiTranslate="eRequestApp.ticketStep.home.createOrEditLabel">
+        Thêm mới hoặc cập nhật Ticket Step
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="eRequestApp.ticketStep.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let nodeIdRef = editForm.get('nodeId')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_nodeId" jhiTranslate="eRequestApp.ticketStep.nodeId">Node Id</label>
+          <input type="number" class="form-control" name="nodeId" id="field_nodeId" data-cy="nodeId" formControlName="nodeId" />
+          @if (nodeIdRef.invalid && (nodeIdRef.dirty || nodeIdRef.touched)) {
+            <div>
+              @if (editForm.get('nodeId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('nodeId')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let performerEmailRef = editForm.get('performerEmail')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_performerEmail" jhiTranslate="eRequestApp.ticketStep.performerEmail">Performer Email</label>
+          <input
+            type="text"
+            class="form-control"
+            name="performerEmail"
+            id="field_performerEmail"
+            data-cy="performerEmail"
+            formControlName="performerEmail"
+          />
+          @if (performerEmailRef.invalid && (performerEmailRef.dirty || performerEmailRef.touched)) {
+            <div>
+              @if (editForm.get('performerEmail')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let statusRef = editForm.get('status')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_status" jhiTranslate="eRequestApp.ticketStep.status">Status</label>
+          <input type="number" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+          @if (statusRef.invalid && (statusRef.dirty || statusRef.touched)) {
+            <div>
+              @if (editForm.get('status')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('status')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_startedAt" jhiTranslate="eRequestApp.ticketStep.startedAt">Started At</label>
+          <div class="d-flex">
+            <input
+              id="field_startedAt"
+              data-cy="startedAt"
+              type="datetime-local"
+              class="form-control"
+              name="startedAt"
+              formControlName="startedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_finishedAt" jhiTranslate="eRequestApp.ticketStep.finishedAt">Finished At</label>
+          <div class="d-flex">
+            <input
+              id="field_finishedAt"
+              data-cy="finishedAt"
+              type="datetime-local"
+              class="form-control"
+              name="finishedAt"
+              formControlName="finishedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_sla" jhiTranslate="eRequestApp.ticketStep.sla">Sla</label>
+          <select class="form-control" id="field_sla" data-cy="sla" name="sla" formControlName="sla" [compareWith]="compareTicketSLA">
+            <option [ngValue]="null"></option>
+            @for (ticketSLAOption of slasCollection; track $index) {
+              <option [ngValue]="ticketSLAOption">{{ ticketSLAOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_ticket" jhiTranslate="eRequestApp.ticketStep.ticket">Ticket</label>
+          <select
+            class="form-control"
+            id="field_ticket"
+            data-cy="ticket"
+            name="ticket"
+            formControlName="ticket"
+            [compareWith]="compareTicket"
+          >
+            <option [ngValue]="null"></option>
+            @for (ticketOption of ticketsSharedCollection; track $index) {
+              <option [ngValue]="ticketOption">{{ ticketOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

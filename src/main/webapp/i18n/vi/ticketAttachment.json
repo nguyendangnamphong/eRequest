@@ -1,0 +1,26 @@
+{
+  "eRequestApp": {
+    "ticketAttachment": {
+      "home": {
+        "title": "Ticket Attachments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Ticket Attachment",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Ticket Attachment",
+        "notFound": "No Ticket Attachments found"
+      },
+      "created": "Một Ticket Attachment mới được tạo với định danh {{ param }}",
+      "updated": "Một Ticket Attachment cập nhật với định danh {{ param }}",
+      "deleted": "Một Ticket Attachment đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Ticket Attachment {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket Attachment"
+      },
+      "id": "ID",
+      "fileId": "File Id",
+      "fileName": "File Name",
+      "ticket": "Ticket"
+    }
+  }
+}

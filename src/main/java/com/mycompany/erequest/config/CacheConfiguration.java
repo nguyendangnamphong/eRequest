@@ -50,6 +50,19 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.erequest.domain.User.class.getName());
             createCache(cm, com.mycompany.erequest.domain.Authority.class.getName());
             createCache(cm, com.mycompany.erequest.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName());
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName() + ".steps");
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName() + ".dataLinks");
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName() + ".relations");
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName() + ".attachments");
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName() + ".slas");
+            createCache(cm, com.mycompany.erequest.domain.Ticket.class.getName() + ".comments");
+            createCache(cm, com.mycompany.erequest.domain.TicketStep.class.getName());
+            createCache(cm, com.mycompany.erequest.domain.TicketDataLink.class.getName());
+            createCache(cm, com.mycompany.erequest.domain.TicketRelation.class.getName());
+            createCache(cm, com.mycompany.erequest.domain.TicketAttachment.class.getName());
+            createCache(cm, com.mycompany.erequest.domain.TicketSLA.class.getName());
+            createCache(cm, com.mycompany.erequest.domain.TicketComment.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

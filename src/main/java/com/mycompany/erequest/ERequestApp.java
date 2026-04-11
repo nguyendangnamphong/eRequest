@@ -19,8 +19,11 @@ import org.springframework.core.env.Environment;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
 @SpringBootApplication
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
+@EnableFeignClients
 public class ERequestApp {
 
     private static final Logger LOG = LoggerFactory.getLogger(ERequestApp.class);

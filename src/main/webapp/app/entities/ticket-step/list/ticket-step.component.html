@@ -1,0 +1,144 @@
+<div>
+  <h2 id="page-heading" data-cy="TicketStepHeading">
+    <span jhiTranslate="eRequestApp.ticketStep.home.title">Ticket Steps</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="eRequestApp.ticketStep.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-ticket-step"
+        [routerLink]="['/ticket-step/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="eRequestApp.ticketStep.home.createLabel">Thêm mới một Ticket Step</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (ticketSteps?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="eRequestApp.ticketStep.home.notFound">No Ticket Steps found</span>
+    </div>
+  }
+
+  @if (ticketSteps && ticketSteps.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nodeId">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.nodeId">Node Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="performerEmail">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.performerEmail">Performer Email</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startedAt">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.startedAt">Started At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="finishedAt">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.finishedAt">Finished At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sla.id">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.sla">Sla</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ticket.id">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketStep.ticket">Ticket</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticketStep of ticketSteps; track trackId(ticketStep)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/ticket-step', ticketStep.id, 'view']">{{ ticketStep.id }}</a>
+              </td>
+              <td>{{ ticketStep.nodeId }}</td>
+              <td>{{ ticketStep.performerEmail }}</td>
+              <td>{{ ticketStep.status }}</td>
+              <td>{{ ticketStep.startedAt | formatMediumDatetime }}</td>
+              <td>{{ ticketStep.finishedAt | formatMediumDatetime }}</td>
+              <td>
+                @if (ticketStep.sla) {
+                  <div>
+                    <a [routerLink]="['/ticket-sla', ticketStep.sla.id, 'view']">{{ ticketStep.sla.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (ticketStep.ticket) {
+                  <div>
+                    <a [routerLink]="['/ticket', ticketStep.ticket.id, 'view']">{{ ticketStep.ticket.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/ticket-step', ticketStep.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a [routerLink]="['/ticket-step', ticketStep.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(ticketStep)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-ticket-data-link-heading"
+        data-cy="TicketDataLinkCreateUpdateHeading"
+        jhiTranslate="eRequestApp.ticketDataLink.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Ticket Data Link
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="eRequestApp.ticketDataLink.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let nodeIdRef = editForm.get('nodeId')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_nodeId" jhiTranslate="eRequestApp.ticketDataLink.nodeId">Node Id</label>
+          <input type="number" class="form-control" name="nodeId" id="field_nodeId" data-cy="nodeId" formControlName="nodeId" />
+          @if (nodeIdRef.invalid && (nodeIdRef.dirty || nodeIdRef.touched)) {
+            <div>
+              @if (editForm.get('nodeId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('nodeId')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let formDataIdRef = editForm.get('formDataId')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_formDataId" jhiTranslate="eRequestApp.ticketDataLink.formDataId">Form Data Id</label>
+          <input
+            type="text"
+            class="form-control"
+            name="formDataId"
+            id="field_formDataId"
+            data-cy="formDataId"
+            formControlName="formDataId"
+          />
+          @if (formDataIdRef.invalid && (formDataIdRef.dirty || formDataIdRef.touched)) {
+            <div>
+              @if (editForm.get('formDataId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_parentFormDataId" jhiTranslate="eRequestApp.ticketDataLink.parentFormDataId"
+            >Parent Form Data Id</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="parentFormDataId"
+            id="field_parentFormDataId"
+            data-cy="parentFormDataId"
+            formControlName="parentFormDataId"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_ticket" jhiTranslate="eRequestApp.ticketDataLink.ticket">Ticket</label>
+          <select
+            class="form-control"
+            id="field_ticket"
+            data-cy="ticket"
+            name="ticket"
+            formControlName="ticket"
+            [compareWith]="compareTicket"
+          >
+            <option [ngValue]="null"></option>
+            @for (ticketOption of ticketsSharedCollection; track $index) {
+              <option [ngValue]="ticketOption">{{ ticketOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

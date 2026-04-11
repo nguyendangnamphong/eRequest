@@ -1,0 +1,115 @@
+<div>
+  <h2 id="page-heading" data-cy="TicketAttachmentHeading">
+    <span jhiTranslate="eRequestApp.ticketAttachment.home.title">Ticket Attachments</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="eRequestApp.ticketAttachment.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-ticket-attachment"
+        [routerLink]="['/ticket-attachment/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="eRequestApp.ticketAttachment.home.createLabel">Thêm mới một Ticket Attachment</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (ticketAttachments?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="eRequestApp.ticketAttachment.home.notFound">No Ticket Attachments found</span>
+    </div>
+  }
+
+  @if (ticketAttachments && ticketAttachments.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fileId">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketAttachment.fileId">File Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fileName">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketAttachment.fileName">File Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ticket.id">
+              <div class="d-flex">
+                <span jhiTranslate="eRequestApp.ticketAttachment.ticket">Ticket</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticketAttachment of ticketAttachments; track trackId(ticketAttachment)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/ticket-attachment', ticketAttachment.id, 'view']">{{ ticketAttachment.id }}</a>
+              </td>
+              <td>{{ ticketAttachment.fileId }}</td>
+              <td>{{ ticketAttachment.fileName }}</td>
+              <td>
+                @if (ticketAttachment.ticket) {
+                  <div>
+                    <a [routerLink]="['/ticket', ticketAttachment.ticket.id, 'view']">{{ ticketAttachment.ticket.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/ticket-attachment', ticketAttachment.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/ticket-attachment', ticketAttachment.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(ticketAttachment)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

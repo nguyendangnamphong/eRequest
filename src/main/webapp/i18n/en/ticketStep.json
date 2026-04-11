@@ -1,0 +1,30 @@
+{
+  "eRequestApp": {
+    "ticketStep": {
+      "home": {
+        "title": "Ticket Steps",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket Step",
+        "createOrEditLabel": "Create or edit a Ticket Step",
+        "notFound": "No Ticket Steps found"
+      },
+      "created": "A new Ticket Step is created with identifier {{ param }}",
+      "updated": "A Ticket Step is updated with identifier {{ param }}",
+      "deleted": "A Ticket Step is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket Step {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket Step"
+      },
+      "id": "ID",
+      "nodeId": "Node Id",
+      "performerEmail": "Performer Email",
+      "status": "Status",
+      "startedAt": "Started At",
+      "finishedAt": "Finished At",
+      "sla": "Sla",
+      "ticket": "Ticket"
+    }
+  }
+}
