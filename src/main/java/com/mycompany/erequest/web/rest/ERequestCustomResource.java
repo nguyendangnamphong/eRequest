@@ -82,18 +82,22 @@ public class ERequestCustomResource {
         String nextPerformer = nodeConfig.performer() != null ? nodeConfig.performer().email() : null;
         // Giả lập logic check user active, nếu account bị inactive thì chuyển sang supervisor
         if (ticketId == 5) { // Giả lập case ticket 5 user bị inactive
-            nextPerformer = "superviser_name@vnu.uet";
+            nextPerformer = nodeConfig.superviserName();
         }
 
-        return ResponseEntity.ok(Map.of("status", "SUCCESS", "message", "Ticket submitted and moved to " + nodeConfig.nodeType(), "performer", nextPerformer));
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("status", "SUCCESS");
+        response.put("message", "Ticket submitted and moved to " + nodeConfig.nodeType());
+        response.put("performer", nextPerformer);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/ticket/{ticketId}/action")
     public ResponseEntity<?> takeAction(@PathVariable("ticketId") Long ticketId, @RequestBody Map<String, Object> payload) {
-        return ResponseEntity.ok(Map.of(
-            "action", payload.get("action"), 
-            "status", "Action taken"
-        ));
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("action", payload.get("action"));
+        response.put("status", "Action taken");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/ticket/{ticketId}/history")
