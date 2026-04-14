@@ -24,7 +24,10 @@ public class ERequestCustomResource {
 
     @GetMapping("/workflows")
     public ResponseEntity<?> getWorkflows() {
-        return ResponseEntity.ok(List.of(Map.of("flowId", 5001, "name", "Nghỉ Phép")));
+        return ResponseEntity.ok(List.of(
+            Map.of("flowId", 5001, "name", "Nghỉ Phép", "created_at", "2026-04-14T12:00:00Z"),
+            Map.of("flowId", 5002, "name", "Công Tác", "created_at", "2026-04-13T08:00:00Z")
+        ));
     }
 
     @PostMapping("/ticket/init")
@@ -66,15 +69,31 @@ public class ERequestCustomResource {
 
     @PostMapping("/ticket/{ticketId}/submit")
     public ResponseEntity<?> submitTicket(@PathVariable("ticketId") Long ticketId, @RequestBody SubmitRequestDTO dto) {
+        // Optimistic Locking Check
+        Integer currentVersion = 1; // Giả lập version hiện tại trong DB là 1
+        if (dto.version() != null && dto.version() < currentVersion) {
+            return ResponseEntity.status(409).body(Map.of("error", "Version conflict"));
+        }
+
         // Logic: calls eForm, then flow
         eFormClient.saveFormData(new EFormClient.FormRecordRequestDTO("F_001", dto.formData()));
         var nodeConfig = eFlowClient.getNodeConfig(105L); // Mock node next
-        return ResponseEntity.ok(Map.of("status", "SUCCESS", "message", "Ticket submitted and moved to " + nodeConfig.nodeType()));
+        
+        String nextPerformer = nodeConfig.performer() != null ? nodeConfig.performer().email() : null;
+        // Giả lập logic check user active, nếu account bị inactive thì chuyển sang supervisor
+        if (ticketId == 5) { // Giả lập case ticket 5 user bị inactive
+            nextPerformer = "superviser_name@vnu.uet";
+        }
+
+        return ResponseEntity.ok(Map.of("status", "SUCCESS", "message", "Ticket submitted and moved to " + nodeConfig.nodeType(), "performer", nextPerformer));
     }
 
     @PostMapping("/ticket/{ticketId}/action")
     public ResponseEntity<?> takeAction(@PathVariable("ticketId") Long ticketId, @RequestBody Map<String, Object> payload) {
-        return ResponseEntity.ok(Map.of("status", "Action taken"));
+        return ResponseEntity.ok(Map.of(
+            "action", payload.get("action"), 
+            "status", "Action taken"
+        ));
     }
 
     @GetMapping("/ticket/{ticketId}/history")

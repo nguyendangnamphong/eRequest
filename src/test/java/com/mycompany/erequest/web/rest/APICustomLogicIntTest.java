@@ -262,6 +262,56 @@ class APICustomLogicIntTest {
     }
 
 
+    @Test
+    void testExportTickets() throws Exception {
+        performAndLog("POST", "/api/request/ticket/export", "{}",
+            "Xuất dữ liệu: Export Excel/PDF", "Kỳ vọng HTTP 200 và thông báo xuất file");
+    }
+
+    @Test
+    void testSlaTracking() throws Exception {
+        performAndLog("GET", "/api/request/ticket/1/sla", null,
+            "SLA Tracking: Kiểm tra cảnh báo trễ hạn", "Kỳ vọng trả về thời gian nhắc nhở (remindAt)");
+    }
+
+    @Test
+    void testAddComment() throws Exception {
+        String payload = "{\"content\": \"Cần bổ sung tài liệu\"}";
+        performAndLog("POST", "/api/request/ticket/1/comment", payload,
+            "Tương tác: Thêm bình luận", "Kỳ vọng lưu comment thành công");
+    }
+
+    @Test
+    void testAiCreateFromPdf() throws Exception {
+        String payload = "{\"pdfUrl\": \"s3://bucket/test.pdf\"}";
+        performAndLog("POST", "/api/request/ai/create-from-pdf", payload,
+            "Tích hợp AI: Tạo ticket từ file PDF", "Kỳ vọng trả về ticketId");
+    }
+
+    @Test
+    void testAiVerifyData() throws Exception {
+        performAndLog("GET", "/api/request/ai/verify-data", null,
+            "Tích hợp AI: Kiểm tra dữ liệu extract", "Kỳ vọng trả về formdata được extract từ AI");
+    }
+
+    @Test
+    void testTicketRelated() throws Exception {
+        performAndLog("GET", "/api/request/ticket/1/related", null,
+            "Liên kết: Danh sách file/ticket liên quan", "Kỳ vọng trả về relatedTicketId");
+    }
+
+    @Test
+    void testGetTicketDetail() throws Exception {
+        performAndLog("GET", "/api/request/ticket/1/detail", null,
+            "Danh sách giao dịch: Lấy chi tiết ticket", "Kỳ vọng trả về trạng thái vẽ luồng");
+    }
+
+    @Test
+    void testGetStepConfig() throws Exception {
+        performAndLog("GET", "/api/request/ticket/1/step-config", null,
+            "Tra cứu cấu trúc Node", "Kỳ vọng trả về cấu hình người phụ trách và form map");
+    }
+
     @AfterAll
     static void generateReport() {
         try {
